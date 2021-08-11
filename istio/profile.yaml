@@ -1,0 +1,67 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  components:
+    ingressGateways:
+      - name: "istio-ingressgateway"
+        enabled: true
+        k8s:
+          hpaSpec:
+            minReplicas: 3
+            maxReplicas: 10
+          affinity:
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    labelSelector:
+                      matchExpressions:
+                        - key: istio
+                          operator: In
+                          values:
+                            - ingressgateway
+                    topologyKey: kubernetes.io/hostname
+          service:
+            externalTrafficPolicy: Local
+          tolerations:
+          - effect: NoSchedule
+            key: sandbox.gke.io/runtime
+            operator: Equal
+            value: gvisor
+
+    pilot:
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+          maxReplicas: 5
+        tolerations:
+        - effect: NoSchedule
+          key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+
+  # addonComponents:
+  #   grafana:
+  #     enabled: false
+  #   prometheus:
+  #     enabled: false
+
+  values:
+    global:
+      # meshExpansion:
+      #   enabled: true
+      proxy:
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+
+  meshConfig:
+    defaultConfig:
+      holdApplicationUntilProxyStarts: true
+    tcpKeepalive:
+      time: 300s

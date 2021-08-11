@@ -1,0 +1,13 @@
+{
+	"name": "network-debugging-light",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"start": "node ./test.js --stack_trace_limit=200",
+		"debug": "node ./test.js --stack_trace_limit=200 --inspect"
+	},
+	"dependencies": {
+		"node-fetch": "^2.6.1"
+	}
+}
