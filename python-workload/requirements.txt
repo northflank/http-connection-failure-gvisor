@@ -1,0 +1,10 @@
+requests
+bs4
+asyncio
+nest_asyncio
+aiohttp
+python-dotenv
+pymongo
+dnspython
+aiodns
+async-timeout
